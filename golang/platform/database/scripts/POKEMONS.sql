@@ -1,0 +1,1 @@
+SELECT pokemon_pokemon.id, pokemon_pokemon.name FROM pokemon_pokemon

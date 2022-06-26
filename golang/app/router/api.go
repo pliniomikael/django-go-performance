@@ -16,7 +16,7 @@ func SetupAPIRoutes(app *config.Application, apiRouter fiber.Router) {
 		return controller.GetPokemons(app, c)})
 
 	pokemons.Get("/:name", func(c *fiber.Ctx) error {
-		return controller.GetPokemons(app, c)})
+		return controller.GetPokemon(app, c)})
 
 
 }

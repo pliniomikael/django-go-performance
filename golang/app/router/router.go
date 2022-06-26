@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/goccy/go-json"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -17,7 +18,7 @@ func SetupRouter(app *config.Application) *fiber.App {
 		JSONDecoder: json.Unmarshal,
 		AppName:     "Django Go Performance",
 	})
-
+	router.Use(logger.New())
 	router.Use(recover.New())
 	router.Use(cors.New(cors.Config{
     AllowOrigins: "*",

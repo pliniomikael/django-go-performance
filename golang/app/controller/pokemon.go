@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/pliniomikael/django-go-performance/golang/app/models"
@@ -29,19 +30,24 @@ func GetPokemon(app *config.Application, c *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(fiber.StatusNotFound, "Query Error")
 	}
+	is_result := true
 	for rows.Next() {
+		is_result = false
 		abilitiesJson := []byte{}
 		if err := rows.Scan(&pokemon.ID, &pokemon.Name, &abilitiesJson); err != nil {
 			fmt.Printf(err.Error())
 			return fiber.NewError(fiber.StatusNotFound, "Pokemon not found")
 		}
-		// log.Printf("%+v", err)
-		// log.Printf("%+v", rows)
 		err = json.Unmarshal(abilitiesJson, &pokemon.Abilities)
+		log.Printf("%+v", err)
+		log.Printf("%+v", abilitiesJson)
 		if err != nil {
 			fmt.Printf(err.Error())
 			return fiber.NewError(fiber.StatusNotFound, "Error Unmarshal")
 		}
+	}
+	if is_result {
+		return fiber.NewError(fiber.StatusNotFound, "Não foi encontrado! o pokemon")
 	}
 
 	return c.Status(fiber.StatusOK).JSON(&pokemon)

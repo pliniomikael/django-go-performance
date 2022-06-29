@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
@@ -37,8 +38,6 @@ func GetPokemon(app *config.Application, c *fiber.Ctx) error {
 	name:= c.Params("name")
 	pokemon := models.DetailPokemon{}
 	query := app.DB.Scripts.Get("POKEMON_NAME")
-
-	// rows, err := app.DB.Client.Query(query)
 	rows, err := app.DB.Client.Query(query, name)
 	if err != nil {
 		return fiber.NewError(fiber.StatusNotFound, "Query Error")
@@ -49,11 +48,12 @@ func GetPokemon(app *config.Application, c *fiber.Ctx) error {
 			fmt.Printf(err.Error())
 			return fiber.NewError(fiber.StatusNotFound, "Pokemon not found")
 		}
-		// keys := make([]models.AbilitiesType, 0)
-		// json.Unmarshal(abilitiesJson, &keys)
-		// if err == nil {
-		// 	return fiber.NewError(fiber.StatusNotFound, "Unmarshal erro")
-		// }
+		err = json.Unmarshal(abilitiesJson, &pokemon.Abilities)
+		// runtime error: invalid memory address or nil pointer dereference
+		if err == nil {
+			fmt.Printf(err.Error())
+			return fiber.NewError(fiber.StatusNotFound, "Error Unmarshal")
+		}
 	}
 	fmt.Printf(err.Error())
 	return c.Status(fiber.StatusOK).JSON(&pokemon)

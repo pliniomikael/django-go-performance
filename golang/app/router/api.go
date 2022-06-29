@@ -12,11 +12,13 @@ func SetupAPIRoutes(app *config.Application, apiRouter fiber.Router) {
 	apiRouter.Get("/ping", controller.PingController)
 	apiRouter.Get("/pong/:message", controller.PongController)
 	pokemons := apiRouter.Group("/pokemons")
-	pokemons.Get("/", func(c *fiber.Ctx) error {
-		return controller.GetPokemons(app, c)})
 
 	pokemons.Get("/:name", func(c *fiber.Ctx) error {
 		return controller.GetPokemon(app, c)})
+
+	pokemons.Get("/", func(c *fiber.Ctx) error {
+		return controller.GetPokemons(app, c)})
+
 
 
 }

@@ -23,26 +23,18 @@ func GetPokemons(app *config.Application, c *fiber.Ctx) error {
 func GetPokemon(app *config.Application, c *fiber.Ctx) error {
 	name:= c.Params("name")
 	pokemon := models.DetailPokemon{}
-	var countPokemons []models.DetailPokemon
 	query := app.DB.Scripts.Get("POKEMON_NAME")
-	rows, err := app.DB.Client.Query(query, name)
-	if err != nil {
+	rows := app.DB.Client.QueryRow(query, name)
+	if rows == nil {
 		return fiber.NewError(fiber.StatusNotFound, "Query Error")
 	}
-	for rows.Next() {
-		abilitiesJson := []byte{}
-		if err := rows.Scan(&pokemon.ID, &pokemon.Name, &abilitiesJson); err != nil {
-			return fiber.NewError(fiber.StatusNotFound, "Pokemon not found")
-		}
-		err = json.Unmarshal(abilitiesJson, &pokemon.Abilities)
-		if err != nil {
-			return fiber.NewError(fiber.StatusNotFound, "Error Unmarshal")
-		}
-		countPokemons = append(countPokemons, pokemon)
+	abilitiesJson := []byte{}
+	if err := rows.Scan(&pokemon.ID, &pokemon.Name, &abilitiesJson); err != nil {
+		return fiber.NewError(fiber.StatusNotFound, "Pokemon não encontrado!")
 	}
-	if len(countPokemons) == 0 {
-		return fiber.NewError(fiber.StatusNotFound, "Não foi encontrado! o pokemon")
+	err := json.Unmarshal(abilitiesJson, &pokemon.Abilities)
+	if err != nil {
+		return fiber.NewError(fiber.StatusNotFound, "Error Unmarshal")
 	}
-
 	return c.Status(fiber.StatusOK).JSON(&pokemon)
 }

@@ -32,12 +32,18 @@ func GetPokemon(app *config.Application, c *gin.Context) {
 		c.JSON(http.StatusNotFound, "Query Error")
 	}
 	abilitiesJson := []byte{}
-	if err := rows.Scan(&pokemon.ID, &pokemon.Name, &abilitiesJson); err != nil {
+	typiesJson := []byte{}
+	if err := rows.Scan(&pokemon.ID, &pokemon.Name, &abilitiesJson, &typiesJson); err != nil {
 		c.JSON(http.StatusNotFound, "Pokemon não encontrado!")
 	}
 	err := json.Unmarshal(abilitiesJson, &pokemon.Abilities)
 	if err != nil {
-		c.JSON(http.StatusNotFound, "Error Unmarshal")
+		c.JSON(http.StatusNotFound, "Error Unmarshal Abilities")
+	}
+	err = json.Unmarshal(typiesJson, &pokemon.Typies)
+	// log.Printf(err.Error())
+	if err != nil {
+		c.JSON(http.StatusNotFound, "Error Unmarshal Typies")
 	}
 	c.JSON(http.StatusOK , &pokemon)
 }

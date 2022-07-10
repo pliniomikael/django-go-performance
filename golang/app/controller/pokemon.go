@@ -3,38 +3,41 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/gofiber/fiber/v2"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
 	"github.com/pliniomikael/django-go-performance/golang/app/models"
 	"github.com/pliniomikael/django-go-performance/golang/platform/config"
 )
 
 
-func GetPokemons(app *config.Application, c *fiber.Ctx) error {
+func GetPokemons(app *config.Application, c *gin.Context) {
 	pokemons := []models.Pokemon{}
 	query := app.DB.Scripts.Get("POKEMONS")
 	err := app.DB.Client.Select(&pokemons, query)
 	if err != nil {
-		return fiber.NewError(fiber.StatusNotFound, "Pokemons not found")
+		c.JSON(http.StatusNotFound, "Pokemons not found")
 	}
-	return c.Status(fiber.StatusOK).JSON(&pokemons)
+	c.JSON(http.StatusOK, &pokemons)
 }
 
 
-func GetPokemon(app *config.Application, c *fiber.Ctx) error {
-	name:= c.Params("name")
+func GetPokemon(app *config.Application, c *gin.Context) {
+	name:= c.Param("name")
 	pokemon := models.DetailPokemon{}
 	query := app.DB.Scripts.Get("POKEMON_NAME")
 	rows := app.DB.Client.QueryRow(query, name)
 	if rows == nil {
-		return fiber.NewError(fiber.StatusNotFound, "Query Error")
+		c.JSON(http.StatusNotFound, "Query Error")
 	}
 	abilitiesJson := []byte{}
 	if err := rows.Scan(&pokemon.ID, &pokemon.Name, &abilitiesJson); err != nil {
-		return fiber.NewError(fiber.StatusNotFound, "Pokemon não encontrado!")
+		c.JSON(http.StatusNotFound, "Pokemon não encontrado!")
 	}
 	err := json.Unmarshal(abilitiesJson, &pokemon.Abilities)
 	if err != nil {
-		return fiber.NewError(fiber.StatusNotFound, "Error Unmarshal")
+		c.JSON(http.StatusNotFound, "Error Unmarshal")
 	}
-	return c.Status(fiber.StatusOK).JSON(&pokemon)
+	c.JSON(http.StatusOK , &pokemon)
 }

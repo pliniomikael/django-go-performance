@@ -1,23 +1,23 @@
 package router
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 	"github.com/pliniomikael/django-go-performance/golang/app/controller"
 	"github.com/pliniomikael/django-go-performance/golang/platform/config"
 )
 
 
-func SetupAPIRoutes(app *config.Application, apiRouter fiber.Router) {
+func SetupAPIRoutes(app *config.Application, apiRouter *gin.RouterGroup) {
 
-	apiRouter.Get("/ping", controller.PingController)
-	apiRouter.Get("/pong/:message", controller.PongController)
+	apiRouter.GET("/ping", controller.PingController)
+	apiRouter.GET("/pong/:message", controller.PongController)
 	pokemons := apiRouter.Group("/pokemons")
 
-	pokemons.Get("/:name", func(c *fiber.Ctx) error {
-		return controller.GetPokemon(app, c)})
+	pokemons.GET("/:name", func(c *gin.Context) {
+		controller.GetPokemon(app, c)})
 
-	pokemons.Get("/", func(c *fiber.Ctx) error {
-		return controller.GetPokemons(app, c)})
+	pokemons.GET("/", func(c *gin.Context) {
+		controller.GetPokemons(app, c)})
 
 
 

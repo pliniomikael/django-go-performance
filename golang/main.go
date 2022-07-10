@@ -31,7 +31,7 @@ func main() {
 		port = "3000"
 	}
 
-	if errAppListen := router.Listen(fmt.Sprintf(":%s", port)); errAppListen != nil {
+	if errAppListen := router.Run(fmt.Sprintf(":%s", port)); errAppListen != nil {
 		log.Fatal("app failed to initialize")
 	}
 

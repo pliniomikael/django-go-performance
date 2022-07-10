@@ -1,6 +1,10 @@
 package controller
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Ping struct{
 	Message string `json:"message" example:"sucesso"`
@@ -10,14 +14,16 @@ type Pong struct{
 	Message string `json:"message" example:"super sucesso"`
 }
 
-func PingController(c *fiber.Ctx) error {
+func PingController(c *gin.Context) {
 	Ping := Ping{"Deu tudo certo, Vai de Promo!"}
-	return c.JSON(fiber.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"message": Ping,
-	})}
+	})
+}
 
 
-func PongController(c *fiber.Ctx) error {
-	return c.JSON(Pong{
-		Message: c.Params("message"),
-	})}
+func PongController(c *gin.Context) {
+	c.JSON(http.StatusOK, Pong{
+		Message: c.Param("message"),
+	})
+}

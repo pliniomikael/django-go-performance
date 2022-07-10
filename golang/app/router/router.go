@@ -1,28 +1,21 @@
 package router
 
 import (
-	"github.com/goccy/go-json"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/logger"
+	"github.com/gin-gonic/gin"
 
 	"github.com/pliniomikael/django-go-performance/golang/platform/config"
 )
 
-func SetupRouter(app *config.Application) *fiber.App {
-	// FIBER SETUP
-	router := fiber.New(fiber.Config{
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
-		AppName:     "Django Go Performance",
-	})
-	router.Use(logger.New())
-	router.Use(recover.New())
+func SetupRouter(app *config.Application) *gin.Engine {
+	// gin SETUP
+	router := gin.New()
+	router.Use(logger.SetLogger())
+	router.Use(gin.Recovery())
 	router.Use(cors.New(cors.Config{
-    AllowOrigins: "*",
-    AllowHeaders:  "Origin, Content-Type, Accept",
+    AllowOrigins: []string{"*"},
+    AllowHeaders:  []string{"Origin, Content-Type, Accept"},
 	}))
 
 	// ROUTER GROUPS

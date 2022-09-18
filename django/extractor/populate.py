@@ -1,4 +1,3 @@
-import http
 import httpx
 import json
 
@@ -7,7 +6,7 @@ from rich.console import Console
 console = Console()
 
 def BasePokemons():
-	with open('extractor/pokemon.json') as json_data:
+	with open('django/extractor/pokemon.json') as json_data:
 		data = json.load(json_data)
 
 	Pokemon.objects.bulk_create([Pokemon(**poke) for poke in data])

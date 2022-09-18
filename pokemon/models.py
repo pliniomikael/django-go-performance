@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 class Pokemon(models.Model):
     name = models.CharField(_("Name"), max_length=50)
-
+    image = models.URLField(blank=True, null=True)
     class Meta:
         verbose_name = _("Pokemon")
         verbose_name_plural = _("Pokemons")
@@ -14,15 +14,17 @@ class Pokemon(models.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'image_url': self.image,
         }
-    
+
     def detail_to_dict(self):
         abilities = Ability.objects.filter(pokemon__id=self.id)
         typies = Type.objects.filter(pokemon__id=self.id)
         return {
             'id': self.id,
             'name': self.name,
+            'image': self.image,
             'abilities': [ability.to_dict() for ability in abilities],
             'typies': [type.to_dict() for type in typies]
         }
@@ -38,7 +40,7 @@ class Ability(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -55,11 +57,9 @@ class Type(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name
         }
-
-

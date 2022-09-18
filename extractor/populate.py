@@ -1,4 +1,5 @@
-import requests
+import http
+import httpx
 import json
 
 from pokemon.models import Pokemon, Ability, Type
@@ -12,17 +13,31 @@ def BasePokemons():
 	Pokemon.objects.bulk_create([Pokemon(**poke) for poke in data])
 	console.print("All Registered Pokemons")
 
-def PokemonsAbilityType():
-	pokemons = Pokemon.objects.all()
-	for poke in pokemons:
-		api_request = requests.get('https://pokeapi.co/api/v2/pokemon/%s' % (poke.name)).json()
-		for ability in api_request['abilities']:
+def PokemonsDetails():
+	for poke in Pokemon.objects.all():
+		pokemon_url = f'https://pokeapi.co/api/v2/pokemon/{poke.name}'
+		resp = httpx.get(pokemon_url).json()
+		for ability in resp['abilities']:
 			Ability.objects.get_or_create(pokemon=poke, name=ability['ability']['name'])
-		for type in api_request['types']:
+		for type in resp['types']:
 			poke_type = Type.objects.get_or_create(name=type['type']['name'])
 			poke_type[0].pokemon.add(poke)
-			
+		# breakpoint()
+		poke.image = resp['sprites']['other']['home']['front_default']
+		poke.save()
 		console.print("Pokemon %s" % (poke.name))
 
-
-   
+def PokemonsImagesNone():
+	for poke in Pokemon.objects.filter(image__isnull=True):
+		pokemon_url = f'https://pokeapi.co/api/v2/pokemon/{poke.name}'
+		resp = httpx.get(pokemon_url).json()
+		if resp['sprites']['other']['home']['front_default']:
+			poke.image = resp['sprites']['other']['home']['front_default']
+		elif resp['sprites']['other']['official-artwork']['front_default']:
+			poke.image = resp['sprites']['other']['official-artwork']['front_default']
+		elif resp['sprites']['front_default']:
+			poke.image = resp['sprites']['front_default']
+		# elif resp['sprites']['front_default']:
+		# 	poke.image = resp['sprites']['front_default']
+		poke.save()
+		console.print("Pokemon %s" % (poke.name))

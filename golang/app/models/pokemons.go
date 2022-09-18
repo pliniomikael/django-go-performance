@@ -3,6 +3,7 @@ package models
 type Pokemon struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
+	Image string `json:"image"`
 }
 
 type AbilitiePokemon struct {
@@ -15,8 +16,7 @@ type TypePokemon struct {
 	Name      string `json:"name"`
 }
 type DetailPokemon struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
+	Pokemon
 	Abilities []AbilitiePokemon `json:"abilities"`
 	Typies []TypePokemon `json:"typies"`
 }

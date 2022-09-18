@@ -26,14 +26,14 @@ func GetPokemons(app *config.Application, c *gin.Context) {
 func GetPokemon(app *config.Application, c *gin.Context) {
 	name:= c.Param("name")
 	pokemon := models.DetailPokemon{}
-	query := app.DB.Scripts.Get("POKEMON_NAME")
+	query := app.DB.Scripts.Get("POKEMON_DETAIL")
 	rows := app.DB.Client.QueryRow(query, name)
 	if rows == nil {
 		c.JSON(http.StatusNotFound, "Query Error")
 	}
 	abilitiesJson := []byte{}
 	typiesJson := []byte{}
-	if err := rows.Scan(&pokemon.ID, &pokemon.Name, &abilitiesJson, &typiesJson); err != nil {
+	if err := rows.Scan(&pokemon.ID, &pokemon.Name, &pokemon.Image, &abilitiesJson, &typiesJson); err != nil {
 		c.JSON(http.StatusNotFound, "Pokemon não encontrado!")
 	}
 	err := json.Unmarshal(abilitiesJson, &pokemon.Abilities)

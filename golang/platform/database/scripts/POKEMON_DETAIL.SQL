@@ -1,6 +1,7 @@
 SELECT
 pokemon.id,
 pokemon.name,
+pokemon.image,
 (SELECT
   json_agg(json_build_object(
     'id', ability.id,

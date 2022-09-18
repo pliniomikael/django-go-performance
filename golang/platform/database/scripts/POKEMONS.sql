@@ -1,5 +1,6 @@
 SELECT
-pokemon_pokemon.id,
-pokemon_pokemon.name,
-pokemon_pokemon.image
+id,
+name,
+image
 FROM pokemon_pokemon
+ORDER BY id

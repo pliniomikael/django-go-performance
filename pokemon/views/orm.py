@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from pokemon.models import Pokemon
-from datetime import datetime
+# from datetime import datetime
 
 def pokemons_orm(request):
   # start = datetime.now()

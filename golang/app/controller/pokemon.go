@@ -16,7 +16,7 @@ func GetPokemons(app *config.Application, c *gin.Context) {
 	pokemons := []models.Pokemon{}
 	query := app.DB.Scripts.Get("POKEMONS")
 	err := app.DB.Client.Select(&pokemons, query)
-	if err != nil {
+	if err == nil {
 		c.JSON(http.StatusNotFound, "Pokemons not found")
 	}
 	c.JSON(http.StatusOK, &pokemons)

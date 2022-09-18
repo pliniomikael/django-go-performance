@@ -1,6 +1,6 @@
 from django.db import connections
 from django.http import JsonResponse
-from datetime import datetime
+# from datetime import datetime
 
 def dictfetchall(cursor):
     columns = [col[0] for col in cursor.description]
@@ -11,7 +11,11 @@ def dictfetchall(cursor):
 # time 0:00:00.006207
 def pokemons_sql(request):
   # start = datetime.now()
-  query = """SELECT pokemon_pokemon.id, pokemon_pokemon.name, pokemon_pokemon.image FROM pokemon_pokemon"""
+  query = """SELECT
+  id, name, image
+  FROM pokemon_pokemon
+  ORDER BY id
+  """
   conn = connections["default"]
   cursor = conn.cursor()
   cursor.execute(query)

@@ -1,8 +1,8 @@
-[] - estruturar projeto
-[] - estudar pages
+[x] - estruturar projeto
+[x] - estudar pages
 [] - estudar components
 [] - estudar props
-[] - estudar router
-[] - estudar api
+[x] - estudar router
+[x] - estudar api
 [] - estudar sass
 [] - estudar flex box

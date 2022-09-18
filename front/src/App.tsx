@@ -1,11 +1,9 @@
+// import React from "react";
+import Routers from "./routes";
 
 function App() {
   return (
-    <div className="App">
-      <div>
-        <h1>Olá Mundo!</h1>
-      </div>
-    </div>
+    <Routers/>
   )
 }
 

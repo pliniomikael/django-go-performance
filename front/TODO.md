@@ -4,5 +4,6 @@
 [] - estudar props
 [x] - estudar router
 [x] - estudar api
+[x] - estudar type
 [] - estudar sass
 [] - estudar flex box

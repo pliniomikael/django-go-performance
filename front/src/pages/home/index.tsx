@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-
+import { Pokemons } from '../../models/pokemon'
 const API = 'http://localhost:8000';
 
 function Home() {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<Pokemons[] | null >(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-     fetch(`${API}/sql/pokemons/`)
+    const fetchData = async () => {
+        await fetch(`${API}/sql/pokemons/`)
         .then((response) => {
             if (!response.ok) {
             throw new Error(
-                `This is an HTTP error: The status is ${response.status}`
+                `A Requisição deu erro: O status é ${response.status}`
             );
             }
             return response.json();
@@ -28,7 +28,12 @@ function Home() {
           .finally(() => {
             setLoading(false);
           });
+    }
+
+    useEffect(() => {
+        fetchData()
     }, []);
+
     return (
         <div className="App">
             <h1>API Pokemon Local</h1>

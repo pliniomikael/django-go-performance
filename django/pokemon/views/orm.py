@@ -13,7 +13,7 @@ def pokemons_orm(request):
     data = [pokemon.to_dict() for pokemon in pokemons]
     # difference = datetime.now() - start
     # print(difference)
-    return JsonResponse({"data": data})
+    return JsonResponse(data, safe=False)
 
 
 @require_GET
@@ -26,4 +26,4 @@ def pokemon_orm(request, pokemon_name):
     data = pokemon.detail_to_dict()
     # difference = datetime.now() - start
     # print(difference)
-    return JsonResponse({"data": data})
+    return JsonResponse(data, safe=False)

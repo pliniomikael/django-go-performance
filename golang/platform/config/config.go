@@ -50,4 +50,3 @@ func (c *Config) getDBConnStr(dbhost, dbname string) string {
 		dbname,
 	)
 }
-

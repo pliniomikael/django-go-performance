@@ -1,9 +1,10 @@
-from django.core.management.base import BaseCommand
 from extractor.populate import PokemonsDetails
+
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = 'Populate Pokemons Details'
+    help = "Populate Pokemons Details"
 
     def handle(self, *args, **kwargs):
-        result = PokemonsDetails()
+        PokemonsDetails()

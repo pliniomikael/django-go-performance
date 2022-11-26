@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pokemon', '0002_remove_type_pokemon_type_pokemon'),
+        ("pokemon", "0002_remove_type_pokemon_type_pokemon"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pokemon',
-            name='image',
+            model_name="pokemon",
+            name="image",
             field=models.URLField(blank=True, null=True),
         ),
     ]

@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pokemon', '0001_initial'),
+        ("pokemon", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='type',
-            name='pokemon',
+            model_name="type",
+            name="pokemon",
         ),
         migrations.AddField(
-            model_name='type',
-            name='pokemon',
-            field=models.ManyToManyField(to='pokemon.pokemon', verbose_name='Pokemon'),
+            model_name="type",
+            name="pokemon",
+            field=models.ManyToManyField(to="pokemon.pokemon", verbose_name="Pokemon"),
         ),
     ]

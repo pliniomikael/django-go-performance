@@ -1,6 +1,7 @@
-from django.db import connections
+from django.db import connection
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
+# from django.views.decorators.cache import cache_page
 
 
 def dictfetchall(cursor):
@@ -8,29 +9,22 @@ def dictfetchall(cursor):
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
-# time 0:00:00.006207
 @require_GET
 def pokemons_sql(request):
-    # start = datetime.now()
-    query = """SELECT
-	id, name, image
-	FROM pokemon_pokemon
-	ORDER BY id
-	"""
-    conn = connections["default"]
-    cursor = conn.cursor()
-    cursor.execute(query)
-    ref_row = dictfetchall(cursor)
-    cursor.close()
-    # print(datetime.now() - start)
-    return JsonResponse(ref_row, safe=False)
+	query = """SELECT
+		id, name, image
+		FROM pokemon_pokemon
+		ORDER BY id
+		"""
+	with connection.cursor() as cursor:
+		cursor.execute(query)
+		ref_row = dictfetchall(cursor)
+	return JsonResponse(ref_row, safe=False)
 
 
-# time 0:00:00.005946
 @require_GET
 def pokemon_sql(request, pokemon_name):
-    # start = datetime.now()
-    query = """
+	query = """
 	SELECT
 		pokemon.id, pokemon.name, pokemon.image,
 	array_agg(json_build_object(
@@ -51,12 +45,9 @@ def pokemon_sql(request, pokemon_name):
 	WHERE pokemon.name = '{pokemon_name}'
 	GROUP BY
 	pokemon.id""".format(
-        pokemon_name
-    )
-    conn = connections["default"]
-    cursor = conn.cursor()
-    cursor.execute(query)
-    ref_row = dictfetchall(cursor)
-    cursor.close()
-    # print(datetime.now() - start)
-    return JsonResponse(ref_row, safe=False)
+		pokemon_name
+	)
+	with connection.cursor() as cursor:
+		cursor.execute(query)
+		ref_row = dictfetchall(cursor)
+	return JsonResponse(ref_row, safe=False)

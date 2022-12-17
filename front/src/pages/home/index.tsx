@@ -1,56 +1,69 @@
 import { useState, useEffect } from "react";
+import { Card, Col, Row, Skeleton, Button } from 'antd';
+
 import { Pokemons } from '../../models/pokemon'
 const API = 'http://localhost:8000';
 
 function Home() {
-    const [data, setData] = useState<Pokemons[] | null >(null);
+    const [data, setData] = useState<Pokemons[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const fetchData = async () => {
+        setLoading(true);
         await fetch(`${API}/sql/pokemons/`)
-        .then((response) => {
-            if (!response.ok) {
-            throw new Error(
-                `A Requisição deu erro: O status é ${response.status}`
-            );
-            }
-            return response.json();
-        })
-        .then((actualData) => {
-            setData(actualData);
-            setError(null);
-          })
-          .catch((err) => {
-            setError(err.message);
-            setData(null);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        `A Requisição deu erro: O status é ${response.status}`
+                    );
+                }
+                return response.json();
+            })
+            .then((actualData) => {
+                setData(actualData);
+                setError(null);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setData(null);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }
 
     useEffect(() => {
         fetchData()
     }, []);
 
-    return (
-        <div className="App">
-            <h1>API Pokemon Local</h1>
-            {loading && <div>LOADING!!!...</div>}
-            {error && (
-                <div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
-            )}
-            <ul>
+    return <>
+        <h1>API Pokemon Local</h1>
+        {error && (
+            <div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
+        )}
+        <div className="site-card-wrapper">
+            <Row gutter={16}>
                 {data &&
-                data.map(({ id, name, image }) => (
-                    <li key={id}>
-                    <h3>{id} - {name} - {image}</h3>
-                    </li>
-                ))}
-            </ul>
+                    data.map(({ id, name, image }) => (
+                        <Col key={id} span={8}>
+                            <Skeleton loading={loading} avatar active>
+                                <Card title={name.toUpperCase()} bordered={true} cover={
+                                    <img
+                                        alt={name}
+                                        src={image}
+                                    />
+                                } style={{ width: 300, marginTop: 16, textAlign: "center" }}>
+                                    <Button type="primary">
+                                        Detalhe
+                                    </Button>
+                                </Card>
+                            </Skeleton>
+                        </Col>
+                    ))}
+            </Row>
         </div>
-        );
+    </>;
 }
 
 export default Home;

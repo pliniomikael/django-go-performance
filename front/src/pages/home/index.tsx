@@ -8,6 +8,8 @@ function Home() {
     const [data, setData] = useState<Pokemons[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [nexpage, setNextPage] = useState(null);
+    const [previouspage, setPreviusPage] = useState(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -21,7 +23,11 @@ function Home() {
                 return response.json();
             })
             .then((actualData) => {
-                setData(actualData);
+                // console.log(actualData)
+                // debugger
+                setData(actualData.data);
+                setNextPage(actualData.next_page);
+                setPreviusPage(actualData.previous_page);
                 setError(null);
             })
             .catch((err) => {
@@ -39,6 +45,8 @@ function Home() {
 
     return <>
         <h1>API Pokemon Local</h1>
+        <h1>Next Page {nexpage} </h1>
+        <h1>Previus Page {previouspage} </h1>
         {error && (
             <div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
         )}

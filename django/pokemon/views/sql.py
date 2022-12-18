@@ -2,6 +2,7 @@ from django.db import connection
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 # from django.views.decorators.cache import cache_page
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 
 def dictfetchall(cursor):
@@ -19,7 +20,21 @@ def pokemons_sql(request):
 	with connection.cursor() as cursor:
 		cursor.execute(query)
 		ref_row = dictfetchall(cursor)
-	return JsonResponse(ref_row, safe=False)
+	paginator = Paginator(ref_row, 25) # Show 25 contacts per page.
+
+	page_number = request.GET.get('page')
+	try:
+			objects = paginator.page(page_number)
+	except PageNotAnInteger:
+			objects = paginator.page(1)
+	except EmptyPage:
+			objects = paginator.page(paginator.num_pages)
+	data = {
+					'previous_page': objects.has_previous() and objects.previous_page_number() or None,
+					'next_page': objects.has_next() and objects.next_page_number() or None,
+					'data': list(objects)
+			}
+	return JsonResponse(data, safe=False)
 
 
 @require_GET

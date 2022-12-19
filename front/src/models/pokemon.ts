@@ -1,4 +1,4 @@
-export interface Pokemons {
+export interface Pokemon {
 	id: number;
 	name: string;
 	image?: string;
@@ -8,5 +8,6 @@ export interface ResponsePokemons {
 	previous_page?: number;
 	next_page?: number;
 	num_pages?: number;
-	pokemons: Pokemons[];
+	total_itens: number;
+	pokemons: Pokemon[];
 }

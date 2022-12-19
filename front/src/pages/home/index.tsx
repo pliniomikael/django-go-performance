@@ -1,19 +1,32 @@
 import { useState, useEffect } from "react";
-import { Card, Col, Row, Skeleton, Button } from 'antd';
+import { Col, Row, Pagination, Layout } from 'antd';
+import type { PaginationProps } from 'antd';
+
+const { Header, Footer, Content } = Layout;
 
 import { ResponsePokemons } from '../../models/pokemon'
+
+import CardPokemon from '../../components/CardPokemon';
 const API = 'http://localhost:8000';
 
+const itemRender: PaginationProps['itemRender'] = (_, type, originalElement) => {
+	if (type === 'prev') {
+		return <a>Previous</a>;
+	}
+	if (type === 'next') {
+		return <a>Next</a>;
+	}
+	return originalElement;
+};
 function Home() {
 	const [data, setData] = useState<ResponsePokemons | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	// const [nexpage, setNextPage] = useState(null);
-	// const [previouspage, setPreviusPage] = useState(null);
+	const [currentPage, setCurrentPage] = useState(1);
 
 	const fetchData = async () => {
 		setLoading(true);
-		await fetch(`${API}/sql/pokemons/`)
+		await fetch(`${API}/sql/pokemons/?page=${currentPage}`)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(
@@ -35,39 +48,51 @@ function Home() {
 			});
 	}
 
+	const getPage = async (page: number) => {
+		setCurrentPage(page);
+		setLoading(true);
+
+		fetchData();
+	}
+
 	useEffect(() => {
 		fetchData()
 	}, []);
 
 	return <>
-		<h1>API Pokemon Local</h1>
-		<h1>Next Page {data?.next_page} </h1>
-		<h1>Previus Page {data?.previous_page} </h1>
-		<h1>Num Pages {data?.num_pages} </h1>
-		{error && (
-			<div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
-		)}
-		<div className="site-card-wrapper">
-			<Row gutter={16}>
-				{data &&
-					data.pokemons.map(({ id, name, image }) => (
-						<Col key={id} span={8}>
-							<Skeleton loading={loading} avatar active>
-								<Card title={name.toUpperCase()} bordered={true} cover={
-									<img
-										alt={name}
-										src={image}
-									/>
-								} style={{ width: 300, marginTop: 16, textAlign: "center" }}>
-									<Button type="primary">
-										Detalhe
-									</Button>
-								</Card>
-							</Skeleton>
-						</Col>
-					))}
-			</Row>
-		</div>
+		<Layout>
+			<Header className="header" style={
+				{
+					textAlign: "center",
+					color: "#ffff",
+					backgroundColor: "#43a047"
+				}
+			}>API Pokemon Local</Header>
+			<Content >
+				{error && (
+					<div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
+				)}
+				<div style={{ alignContent: "space-between" }}>
+					<Row justify="space-around" align="middle" gutter={8}>
+						{data &&
+							data.pokemons.map(({ id, name, image }) => (
+								<Col key={id} span={8}>
+									<CardPokemon id={id} name={name} image={image} />
+								</Col>
+							))}
+					</Row>
+				</div>
+			</Content>
+			<Footer style={{ textAlign: "center" }}>
+				<Pagination
+					onChange={getPage}
+					defaultCurrent={1}
+					total={data?.total_itens}
+					itemRender={itemRender}
+					showSizeChanger={false}
+				/>
+			</Footer>
+		</Layout>
 	</>;
 }
 

@@ -5,15 +5,14 @@ import Home from './pages/home';
 import Detail from './pages/detail';
 
 const Routers = () => {
-
-    return (
-        <Router>
-            <Routes>
-                <Route path="/detail/:name" element={<Detail />} />
-                <Route path="/" element={<Home />} />
-            </Routes>
-        </Router>
-    )
+	return (
+		<Router>
+			<Routes>
+				<Route path="/:name" element={<Detail />} />
+				<Route path="/" element={<Home />} />
+			</Routes>
+		</Router>
+	)
 }
 
 export default Routers;

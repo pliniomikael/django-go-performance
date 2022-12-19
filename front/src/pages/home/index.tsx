@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Col, Row, Pagination, Layout, Skeleton } from 'antd';
-import type { PaginationProps } from 'antd';
+import { useSearchParams } from "react-router-dom";
 
 const { Header, Footer, Content } = Layout;
 
@@ -13,17 +13,10 @@ function Home() {
 	const [data, setData] = useState<ResponsePokemons | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const [currentPage, setCurrentPage] = useState(1);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const activePage = searchParams.get('page') || 1;
 
-	const itemRender: PaginationProps['itemRender'] = (_, type, originalElement) => {
-		if (type === 'prev') {
-			return <a>Previous</a>;
-		}
-		if (type === 'next') {
-			return <a>Next</a>;
-		}
-		return originalElement;
-	};
+
 	const fetchData = async (page: Number) => {
 		setLoading(true);
 		await fetch(`${API}/sql/pokemons/?page=${page}`)
@@ -49,17 +42,14 @@ function Home() {
 	}
 
 	const getPage = async (page: number) => {
-		setCurrentPage(page);
 		setLoading(true);
-		console.log("pagina da paginação:");
-		console.log(page);
-		console.log("pagina da currentPage:");
-		console.log(currentPage);
+		setSearchParams({ page: `${page}` });
 		fetchData(page);
 	}
 
 	useEffect(() => {
-		fetchData(currentPage);
+		setSearchParams({ page: `${activePage}` });
+		fetchData(Number(activePage));
 	}, []);
 
 	return <>
@@ -92,10 +82,9 @@ function Home() {
 			<Footer style={{ textAlign: "center" }}>
 				<Pagination
 					onChange={getPage}
-					defaultCurrent={currentPage}
 					total={data?.total_itens}
-					itemRender={itemRender}
 					showSizeChanger={false}
+					current={Number(activePage)}
 				/>
 			</Footer>
 		</Layout>

@@ -20,20 +20,23 @@ def pokemons_sql(request):
 	with connection.cursor() as cursor:
 		cursor.execute(query)
 		ref_row = dictfetchall(cursor)
-	paginator = Paginator(ref_row, 25) # Show 25 contacts per page.
+	paginator = Paginator(ref_row, 7) # Show 25 contacts per page.
 
 	page_number = request.GET.get('page')
+	num_pages = paginator.num_pages
+
 	try:
-			objects = paginator.page(page_number)
+		objects = paginator.page(page_number)
 	except PageNotAnInteger:
-			objects = paginator.page(1)
+		objects = paginator.page(1)
 	except EmptyPage:
-			objects = paginator.page(paginator.num_pages)
+		objects = paginator.page(paginator.num_pages)
 	data = {
-					'previous_page': objects.has_previous() and objects.previous_page_number() or None,
-					'next_page': objects.has_next() and objects.next_page_number() or None,
-					'data': list(objects)
-			}
+        'previous_page': objects.has_previous() and objects.previous_page_number() or None,
+        'next_page': objects.has_next() and objects.next_page_number() or None,
+        'num_pages': num_pages or None,
+        'pokemons': list(objects)
+    }
 	return JsonResponse(data, safe=False)
 
 

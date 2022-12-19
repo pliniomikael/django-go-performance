@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Col, Row, Pagination, Layout } from 'antd';
+import { Col, Row, Pagination, Layout, Skeleton } from 'antd';
 import type { PaginationProps } from 'antd';
 
 const { Header, Footer, Content } = Layout;
@@ -9,24 +9,24 @@ import { ResponsePokemons } from '../../models/pokemon'
 import CardPokemon from '../../components/CardPokemon';
 const API = 'http://localhost:8000';
 
-const itemRender: PaginationProps['itemRender'] = (_, type, originalElement) => {
-	if (type === 'prev') {
-		return <a>Previous</a>;
-	}
-	if (type === 'next') {
-		return <a>Next</a>;
-	}
-	return originalElement;
-};
 function Home() {
 	const [data, setData] = useState<ResponsePokemons | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 
-	const fetchData = async () => {
+	const itemRender: PaginationProps['itemRender'] = (_, type, originalElement) => {
+		if (type === 'prev') {
+			return <a>Previous</a>;
+		}
+		if (type === 'next') {
+			return <a>Next</a>;
+		}
+		return originalElement;
+	};
+	const fetchData = async (page: Number) => {
 		setLoading(true);
-		await fetch(`${API}/sql/pokemons/?page=${currentPage}`)
+		await fetch(`${API}/sql/pokemons/?page=${page}`)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(
@@ -51,12 +51,15 @@ function Home() {
 	const getPage = async (page: number) => {
 		setCurrentPage(page);
 		setLoading(true);
-
-		fetchData();
+		console.log("pagina da paginação:");
+		console.log(page);
+		console.log("pagina da currentPage:");
+		console.log(currentPage);
+		fetchData(page);
 	}
 
 	useEffect(() => {
-		fetchData()
+		fetchData(currentPage);
 	}, []);
 
 	return <>
@@ -69,24 +72,27 @@ function Home() {
 				}
 			}>API Pokemon Local</Header>
 			<Content >
-				{error && (
-					<div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
-				)}
-				<div style={{ alignContent: "space-between" }}>
-					<Row justify="space-around" align="middle" gutter={8}>
-						{data &&
-							data.pokemons.map(({ id, name, image }) => (
-								<Col key={id} span={8}>
-									<CardPokemon id={id} name={name} image={image} />
-								</Col>
-							))}
-					</Row>
-				</div>
+				<Skeleton loading={loading} active >
+
+					{error && (
+						<div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
+					)}
+					<div style={{ alignContent: "space-between" }}>
+						<Row justify="space-around" align="middle" gutter={8}>
+							{data &&
+								data.pokemons.map(({ id, name, image }) => (
+									<Col key={id} span={8}>
+										<CardPokemon id={id} name={name} image={image} />
+									</Col>
+								))}
+						</Row>
+					</div>
+				</Skeleton>
 			</Content>
 			<Footer style={{ textAlign: "center" }}>
 				<Pagination
 					onChange={getPage}
-					defaultCurrent={1}
+					defaultCurrent={currentPage}
 					total={data?.total_itens}
 					itemRender={itemRender}
 					showSizeChanger={false}

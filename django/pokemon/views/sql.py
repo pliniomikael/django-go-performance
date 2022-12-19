@@ -20,7 +20,7 @@ def pokemons_sql(request):
 	with connection.cursor() as cursor:
 		cursor.execute(query)
 		ref_row = dictfetchall(cursor)
-	paginator = Paginator(ref_row, 10) # Show 25 contacts per page.
+	paginator = Paginator(ref_row, 9) # Show 25 contacts per page.
 
 	page_number = request.GET.get('page')
 	num_pages = paginator.num_pages

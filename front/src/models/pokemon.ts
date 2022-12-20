@@ -11,3 +11,19 @@ export interface ResponsePokemons {
 	total_itens: number;
 	pokemons: Pokemon[];
 }
+
+export interface Abilities {
+	id: number;
+	name: number;
+}
+export interface Typies {
+	id: number;
+	name: number;
+}
+export interface ResponseDetailPokemon {
+	id: number;
+	name: number;
+	image?: number;
+	abilities: Abilities[];
+	typies: Typies[];
+}

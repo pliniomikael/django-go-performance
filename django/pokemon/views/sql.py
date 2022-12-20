@@ -9,6 +9,10 @@ def dictfetchall(cursor):
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
+def dictfetchone(cursor):
+	columns = [col[0] for col in cursor.description]
+	result = cursor.fetchone()
+	return dict(zip(columns, result))
 
 @require_GET
 def pokemons_sql(request):
@@ -63,12 +67,10 @@ def pokemon_sql(request, pokemon_name):
 			on pokemon_type_pokemon.pokemon_id = pokemon.id
 		inner join pokemon_type
 			ON pokemon_type.id = pokemon_type_pokemon.type_id
-	WHERE pokemon.name = '{pokemon_name}'
+	WHERE pokemon.name = '{}'
 	GROUP BY
-	pokemon.id""".format(
-		pokemon_name
-	)
+	pokemon.id""".format(pokemon_name)
 	with connection.cursor() as cursor:
 		cursor.execute(query)
-		ref_row = dictfetchall(cursor)
+		ref_row = dictfetchone(cursor)
 	return JsonResponse(ref_row, safe=False)

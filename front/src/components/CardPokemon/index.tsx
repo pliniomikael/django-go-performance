@@ -1,5 +1,6 @@
 import { Card, Button } from 'antd';
 import { Pokemon } from '../../models/pokemon';
+import { Link } from "react-router-dom";
 
 function CardPokemon(props: Pokemon) {
 	return <>
@@ -9,9 +10,11 @@ function CardPokemon(props: Pokemon) {
 				src={props.image}
 			/>
 		} style={{ width: 300, marginTop: 16, textAlign: "center" }}>
-			<Button type="primary">
-				Detalhe
-			</Button>
+			<Link to={props.name}>
+				<Button type="primary">
+					Detalhe
+				</Button>
+			</Link>
 		</Card>
 	</>
 }

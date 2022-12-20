@@ -16,7 +16,6 @@ function Home() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const activePage = searchParams.get('page') || 1;
 
-
 	const fetchData = async (page: Number) => {
 		setLoading(true);
 		await fetch(`${API}/sql/pokemons/?page=${page}`)
@@ -63,7 +62,6 @@ function Home() {
 			}>API Pokemon Local</Header>
 			<Content >
 				<Skeleton loading={loading} active >
-
 					{error && (
 						<div>{`Aconteu um problema para buscar os dados - ${error}`}</div>
 					)}

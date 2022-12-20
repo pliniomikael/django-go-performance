@@ -1,9 +1,8 @@
-// import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from './pages/home';
-import Detail from './pages/detail';
-import Page404 from "./pages/page404";
+import Home from './pages/Home';
+import Detail from './pages/Detail';
+import Page404 from "./pages/Page404";
 
 const Routers = () => {
 	return (

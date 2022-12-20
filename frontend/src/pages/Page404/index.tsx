@@ -2,7 +2,7 @@ import { Button } from "antd";
 import { Link } from "react-router-dom";
 import style from "./page404.module.css";
 
-import Snorlax from "../../img/Snorlax.svg";
+import Snorlax from "../../assets/img/Snorlax.svg";
 
 function Page404() {
 

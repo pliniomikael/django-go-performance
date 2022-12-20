@@ -10,7 +10,7 @@ function CardPokemon(props: Pokemon) {
 				src={props.image}
 			/>
 		} style={{ width: 300, marginTop: 16, textAlign: "center" }}>
-			<Link to={props.name}>
+			<Link to={"pokemon/" + props.name}>
 				<Button type="primary">
 					Detalhe
 				</Button>

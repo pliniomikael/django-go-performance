@@ -22,8 +22,8 @@ export interface Typies {
 }
 export interface ResponseDetailPokemon {
 	id: number;
-	name: number;
-	image?: number;
+	name: string;
+	image?: string;
 	abilities: Abilities[];
 	typies: Typies[];
 }

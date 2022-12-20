@@ -8,8 +8,9 @@ const Routers = () => {
 	return (
 		<Router>
 			<Routes>
-				<Route path="/:name" element={<Detail />} />
+				<Route path="pokemon/:name" element={<Detail />} />
 				<Route path="/" element={<Home />} />
+				<Route path="*" element={<h1>Pagina não encontrada</h1>} />
 			</Routes>
 		</Router>
 	)

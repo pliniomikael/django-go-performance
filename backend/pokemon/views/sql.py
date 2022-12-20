@@ -24,7 +24,7 @@ def pokemons_sql(request):
 	with connection.cursor() as cursor:
 		cursor.execute(query)
 		ref_row = dictfetchall(cursor)
-	paginator = Paginator(ref_row, 9) # Show 25 contacts per page.
+	paginator = Paginator(ref_row, 9)
 
 	page_number = request.GET.get('page')
 	num_pages = paginator.num_pages
@@ -42,8 +42,7 @@ def pokemons_sql(request):
         'total_itens': total_itens or 0,
         'pokemons': list(objects)
     }
-	# import time
-	# time.sleep(3)
+
 	return JsonResponse(data, safe=False)
 
 
@@ -51,25 +50,27 @@ def pokemons_sql(request):
 def pokemon_sql(request, pokemon_name):
 	query = """
 	SELECT
-		pokemon.id, pokemon.name, pokemon.image,
+	pokemon.id,
+	pokemon.name,
+	pokemon.image,
+	(SELECT
 	array_agg(json_build_object(
 		'id', ability.id,
 		'name', ability.name
-		)) as abilities,
+		)) as abilities
+		FROM pokemon_ability as ability
+		WHERE ability.pokemon_id = pokemon.id),
+	(SELECT
 	array_agg(json_build_object(
 		'id', pokemon_type.id,
 		'name', pokemon_type.name
 		)) as typies
+		FROM pokemon_type_pokemon
+		INNER JOIN pokemon_type
+		ON pokemon_type.id = pokemon_type_pokemon.type_id
+		WHERE pokemon_type_pokemon.pokemon_id = pokemon.id)
 	FROM pokemon_pokemon as pokemon
-		inner join pokemon_ability as ability
-			on ability.pokemon_id = pokemon.id
-		inner join pokemon_type_pokemon
-			on pokemon_type_pokemon.pokemon_id = pokemon.id
-		inner join pokemon_type
-			ON pokemon_type.id = pokemon_type_pokemon.type_id
-	WHERE pokemon.name = '{}'
-	GROUP BY
-	pokemon.id""".format(pokemon_name)
+	WHERE pokemon.name = '{}'""".format(pokemon_name)
 	with connection.cursor() as cursor:
 		cursor.execute(query)
 		ref_row = dictfetchone(cursor)
